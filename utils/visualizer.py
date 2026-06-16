@@ -201,9 +201,8 @@ def teacher_ranking_bar(ranked_teachers: List[Dict[str, Any]]) -> go.Figure:
                 cmin=0,
                 cmax=100,
                 colorbar=dict(
-                    title="Score",
+                    title=dict(text="Score", font=dict(color=COLORS["subtext"])),
                     tickfont=dict(color=COLORS["subtext"]),
-                    titlefont=dict(color=COLORS["subtext"]),
                 ),
             ),
             text=[f"{s:.1f} ({g})" for s, g in zip(scores, grades)],
@@ -449,9 +448,8 @@ def feedback_volume_bar(
                 colorscale="Sunset",
                 cmin=0,
                 colorbar=dict(
-                    title="Volume",
+                    title=dict(text="Volume", font=dict(color=COLORS["subtext"])),
                     tickfont=dict(color=COLORS["subtext"]),
-                    titlefont=dict(color=COLORS["subtext"]),
                 ),
             ),
             text=counts["Feedback Count"],
