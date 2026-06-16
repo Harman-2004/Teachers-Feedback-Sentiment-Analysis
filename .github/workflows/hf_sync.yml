@@ -13,31 +13,59 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
 
-      - name: Configure git
-        run: |
-          git config --global user.email "harman@github-ci.com"
-          git config --global user.name "Harman CI"
-          git config --global credential.helper store
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: Push to Hugging Face
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+
+      - name: Upload to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          echo "=== Checking token is set ==="
-          if [ -z "$HF_TOKEN" ]; then
-            echo "ERROR: HF_TOKEN is empty or not set!"
-            exit 1
-          fi
-          echo "Token is set (length: ${#HF_TOKEN})"
+          python - <<'EOF'
+          import os
+          from huggingface_hub import HfApi
 
-          echo "=== Adding HF remote ==="
-          git remote add hf "https://harman-2004:${HF_TOKEN}@huggingface.co/spaces/harman-2004/Teacher-Feedback-Analytics"
+          token = os.environ.get("HF_TOKEN", "")
+          if not token:
+              print("ERROR: HF_TOKEN secret is not set in GitHub!")
+              exit(1)
 
-          echo "=== Fetching HF remote ==="
-          git fetch hf || echo "Fetch failed (may be empty space)"
+          print(f"Token found, length={len(token)}")
 
-          echo "=== Pushing to HF ==="
-          git push --force hf HEAD:main 2>&1
-          echo "=== Push complete ==="
+          api = HfApi()
+
+          # Verify token works
+          try:
+              user = api.whoami(token=token)
+              print(f"Authenticated as: {user['name']}")
+          except Exception as e:
+              print(f"ERROR: Token authentication failed: {e}")
+              exit(1)
+
+          # Upload all files
+          print("Uploading files to HF Space...")
+          try:
+              api.upload_folder(
+                  folder_path=".",
+                  repo_id="harman-2004/Teacher-Feedback-Analytics",
+                  repo_type="space",
+                  token=token,
+                  ignore_patterns=[
+                      ".git/*",
+                      ".github/*",
+                      "__pycache__/*",
+                      "*.pyc",
+                      ".gitignore",
+                      "node_modules/*",
+                  ],
+              )
+              print("SUCCESS: Files uploaded to Hugging Face Space!")
+          except Exception as e:
+              print(f"ERROR uploading: {e}")
+              exit(1)
+          EOF
