@@ -54,15 +54,16 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------------------
-# Custom CSS — premium dark theme
+# Custom CSS — premium dark + light theme
 # ---------------------------------------------------------------------------
-st.markdown(
-    """
+_DARK_CSS = """
 <style>
 /* ── Google Font ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ── Root variables ── */
+/* ══════════════════════════════════════════
+   DARK THEME  (default)
+══════════════════════════════════════════ */
 :root {
   --bg:        #0f1117;
   --card:      #1a1d2e;
@@ -75,8 +76,31 @@ st.markdown(
   --positive:  #4ade80;
   --neutral:   #facc15;
   --negative:  #f87171;
-}
+}"""
 
+_LIGHT_CSS = """
+<style>
+/* ── Google Font ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ══════════════════════════════════════════
+   LIGHT THEME
+══════════════════════════════════════════ */
+:root {
+  --bg:        #f0f2f8;
+  --card:      #ffffff;
+  --card2:     #f8f9fe;
+  --border:    #dde1f0;
+  --text:      #1e1b4b;
+  --subtext:   #64748b;
+  --accent1:   #5b50e8;
+  --accent2:   #c026d3;
+  --positive:  #16a34a;
+  --neutral:   #d97706;
+  --negative:  #dc2626;
+}"""
+
+_SHARED_CSS = """
 /* ── Global ── */
 html, body, [class*="css"] {
   font-family: 'Inter', system-ui, sans-serif !important;
@@ -87,22 +111,41 @@ html, body, [class*="css"] {
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-  background: linear-gradient(180deg, #12162a 0%, #0f1117 100%) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 90%, var(--accent1)) 0%, var(--bg) 100%) !important;
   border-right: 1px solid var(--border);
 }
 [data-testid="stSidebar"] .stMarkdown h1,
 [data-testid="stSidebar"] .stMarkdown h2,
 [data-testid="stSidebar"] .stMarkdown h3 { color: var(--accent2) !important; }
 
+/* ── Theme toggle chip ── */
+.theme-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: default;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
 /* ── Header ── */
 .dashboard-header {
-  background: linear-gradient(135deg, #1a1d2e 0%, #12162a 50%, #1a1d2e 100%);
+  background: linear-gradient(135deg, var(--card) 0%, var(--card2) 50%, var(--card) 100%);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 2rem 2.5rem;
   margin-bottom: 1.5rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 .dashboard-header::before {
   content: '';
@@ -114,6 +157,7 @@ html, body, [class*="css"] {
   background: radial-gradient(ellipse, rgba(108,99,255,0.15) 0%, transparent 70%);
   pointer-events: none;
 }
+.dashboard-header-text { flex: 1; }
 .dashboard-header h1 {
   font-size: 2.2rem;
   font-weight: 800;
@@ -124,6 +168,20 @@ html, body, [class*="css"] {
   margin: 0 0 0.3rem 0;
 }
 .dashboard-header p { color: var(--subtext); margin: 0; font-size: 1rem; }
+.dashboard-hero-img {
+  flex-shrink: 0;
+  width: 210px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 12px;
+  opacity: 0.92;
+  filter: drop-shadow(0 4px 24px rgba(108,99,255,0.4));
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0px);  }
+  50%      { transform: translateY(-8px); }
+}
 
 /* ── KPI Cards ── */
 .kpi-card {
@@ -279,9 +337,16 @@ thead tr th { background: var(--card2) !important; color: var(--text) !important
 /* ── Hide Streamlit branding ── */
 #MainMenu, footer, header { visibility: hidden; }
 </style>
-""",
-    unsafe_allow_html=True,
-)
+"""
+
+
+def _inject_theme(dark_mode: bool):
+    """Inject dark or light theme variables plus all shared styles."""
+    base = _DARK_CSS if dark_mode else _LIGHT_CSS
+    st.markdown(base + _SHARED_CSS, unsafe_allow_html=True)
+
+
+# Theme will be injected after sidebar reads user preference (see main())
 
 
 # ---------------------------------------------------------------------------
@@ -339,6 +404,7 @@ def init_session_state():
 # ---------------------------------------------------------------------------
 def render_sidebar():
     with st.sidebar:
+        # ── Branding ──
         st.markdown(
             """
             <div style='text-align:center; padding: 1rem 0 1.5rem 0;'>
@@ -347,6 +413,21 @@ def render_sidebar():
               <div style='font-size:0.75rem; color:#64748b; margin-top:0.2rem;'>AI-Powered Dashboard</div>
             </div>
             """,
+            unsafe_allow_html=True,
+        )
+
+        # ── Theme toggle ──
+        st.markdown("---")
+        st.markdown("### 🎨 Appearance")
+        dark_mode = st.toggle(
+            "🌙 Dark Mode",
+            value=True,
+            key="dark_mode_toggle",
+            help="Switch between Dark and Light themes",
+        )
+        theme_label = "🌙 Dark Theme" if dark_mode else "☀️ Light Theme"
+        st.markdown(
+            f"<div class='theme-chip'>{theme_label}</div>",
             unsafe_allow_html=True,
         )
 
@@ -411,7 +492,7 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-    return source, uploaded_file, manual_text, manual_teacher, run_summarizer, run_aspects, use_fallback, show_sample_size, analyse_btn
+    return source, uploaded_file, manual_text, manual_teacher, run_summarizer, run_aspects, use_fallback, show_sample_size, analyse_btn, dark_mode
 
 
 # ---------------------------------------------------------------------------
@@ -839,16 +920,6 @@ def render_wordcloud(texts: List[str]):
 def main():
     init_session_state()
 
-    # Header
-    st.markdown(
-        """
-        <div class="dashboard-header">
-          <h1>🎓 Teacher Feedback Analytics Dashboard</h1>
-          <p>AI-powered sentiment analysis, aspect detection & performance scoring for educator feedback</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
     # Load NLP modules
     nlp = load_nlp_modules()
@@ -857,8 +928,38 @@ def main():
         st.code("pip install -r requirements.txt", language="bash")
         return
 
-    # Sidebar
-    source, uploaded_file, manual_text, manual_teacher, run_summarizer, run_aspects, use_fallback, max_entries, analyse_btn = render_sidebar()
+    # Sidebar (reads dark_mode BEFORE CSS injection)
+    source, uploaded_file, manual_text, manual_teacher, run_summarizer, run_aspects, use_fallback, max_entries, analyse_btn, dark_mode = render_sidebar()
+
+    # Inject chosen theme CSS
+    _inject_theme(dark_mode)
+
+    # Hero image (base64-encoded for Streamlit compatibility)
+    import base64 as _b64
+    _hero_path = Path(__file__).parent / "data" / "analytics_hero.png"
+    _hero_b64 = ""
+    if _hero_path.exists():
+        with open(_hero_path, "rb") as _f:
+            _hero_b64 = _b64.b64encode(_f.read()).decode()
+    _hero_tag = (
+        f"<img src='data:image/png;base64,{_hero_b64}' "
+        f"class='dashboard-hero-img' alt='AI Analytics illustration'>"
+        if _hero_b64 else ""
+    )
+
+    # Dashboard header
+    st.markdown(
+        f"""
+        <div class="dashboard-header">
+          <div class="dashboard-header-text">
+            <h1>🎓 Teacher Feedback Analytics Dashboard</h1>
+            <p>AI-powered sentiment analysis, aspect detection &amp; performance scoring for educator feedback</p>
+          </div>
+          {_hero_tag}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     # Apply Fast Rule-Based Mode settings
     import os
@@ -866,6 +967,7 @@ def main():
         os.environ["FORCE_RULE_BASED"] = "1"
     else:
         os.environ["FORCE_RULE_BASED"] = "0"
+
 
     # Clear NLP loader caches whenever the setting is changed in the session
     if "prev_fallback" not in st.session_state or st.session_state["prev_fallback"] != use_fallback:
