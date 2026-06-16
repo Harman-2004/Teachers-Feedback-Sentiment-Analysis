@@ -5,9 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -18,11 +15,29 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Configure git
+        run: |
+          git config --global user.email "harman@github-ci.com"
+          git config --global user.name "Harman CI"
+          git config --global credential.helper store
+
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git config --global user.email "ci@github.com"
-          git config --global user.name "GitHub CI"
-          git remote add hf https://harman-2004:${HF_TOKEN}@huggingface.co/spaces/harman-2004/Teacher-Feedback-Analytics
-          git push --force hf HEAD:main
+          echo "=== Checking token is set ==="
+          if [ -z "$HF_TOKEN" ]; then
+            echo "ERROR: HF_TOKEN is empty or not set!"
+            exit 1
+          fi
+          echo "Token is set (length: ${#HF_TOKEN})"
+
+          echo "=== Adding HF remote ==="
+          git remote add hf "https://harman-2004:${HF_TOKEN}@huggingface.co/spaces/harman-2004/Teacher-Feedback-Analytics"
+
+          echo "=== Fetching HF remote ==="
+          git fetch hf || echo "Fetch failed (may be empty space)"
+
+          echo "=== Pushing to HF ==="
+          git push --force hf HEAD:main 2>&1
+          echo "=== Push complete ==="
