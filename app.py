@@ -61,9 +61,7 @@ _DARK_CSS = """
 /* ── Google Font ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ══════════════════════════════════════════
-   DARK THEME  (default)
-══════════════════════════════════════════ */
+/* ══ DARK THEME ══ */
 :root {
   --bg:        #0f1117;
   --card:      #1a1d2e;
@@ -76,6 +74,13 @@ _DARK_CSS = """
   --positive:  #4ade80;
   --neutral:   #facc15;
   --negative:  #f87171;
+}
+[data-testid="stApp"],[data-testid="stAppViewContainer"],[data-testid="stMain"],.main,.stApp {
+  background-color: #0f1117 !important;
+}
+[data-testid="stHeader"] { background-color: #0f1117 !important; }
+[data-testid="stSidebar"],[data-testid="stSidebarContent"] {
+  background: linear-gradient(180deg, #12162a 0%, #0f1117 100%) !important;
 }"""
 
 _LIGHT_CSS = """
@@ -83,22 +88,73 @@ _LIGHT_CSS = """
 /* ── Google Font ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ══════════════════════════════════════════
-   LIGHT THEME
-══════════════════════════════════════════ */
+/* ══ LIGHT THEME — Lavender & White Premium ══ */
 :root {
-  --bg:        #f0f2f8;
+  --bg:        #f5f3ff;
   --card:      #ffffff;
-  --card2:     #f8f9fe;
-  --border:    #dde1f0;
+  --card2:     #faf9ff;
+  --border:    #e4e0fb;
   --text:      #1e1b4b;
-  --subtext:   #64748b;
-  --accent1:   #5b50e8;
-  --accent2:   #c026d3;
-  --positive:  #16a34a;
+  --subtext:   #5b5ea6;
+  --accent1:   #7c3aed;
+  --accent2:   #db2777;
+  --positive:  #059669;
   --neutral:   #d97706;
-  --negative:  #dc2626;
-}"""
+  --negative:  #e11d48;
+}
+
+/* ── Override EVERY Streamlit container ── */
+[data-testid="stApp"],
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="stVerticalBlockBorderWrapper"],
+.main, .stApp, section.main, div.main,
+.block-container {
+  background-color: #f5f3ff !important;
+  color: #1e1b4b !important;
+}
+[data-testid="stHeader"] {
+  background-color: #f5f3ff !important;
+  border-bottom: 1px solid #e4e0fb !important;
+}
+
+/* ── Light sidebar ── */
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"] {
+  background: linear-gradient(160deg, #ede9fe 0%, #f5f3ff 100%) !important;
+  border-right: 1px solid #e4e0fb !important;
+}
+
+/* ── Force all text to dark in light mode ── */
+[data-testid="stApp"] p,
+[data-testid="stApp"] span:not(.badge-positive):not(.badge-negative):not(.badge-neutral),
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+.stMarkdown p, .stMarkdown li, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
+.stTextInput label, .stSlider label, .stToggle label,
+.stRadio label, .stMultiSelect label, .stSelectbox label,
+.stFileUploader label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] div:not(.theme-chip):not(.stButton) {
+  color: #1e1b4b !important;
+}
+
+/* ── Widget input backgrounds ── */
+.stTextInput > div > div,
+.stTextArea > div > div,
+.stSelectbox > div > div > div,
+.stMultiSelect > div > div {
+  background-color: #ffffff !important;
+  border-color: #e4e0fb !important;
+  color: #1e1b4b !important;
+}
+
+/* ── Dataframe in light ── */
+.stDataFrame, [data-testid="stDataFrame"] { background: #ffffff !important; }
+
+/* ── Tab list in light ── */
+.stTabs [data-baseweb="tab-list"] { background: #ede9fe !important; }"""
 
 _SHARED_CSS = """
 /* ── Global ── */
@@ -109,10 +165,9 @@ html, body, [class*="css"] {
 }
 .main .block-container { padding: 1.5rem 2rem 3rem 2rem; max-width: 1400px; }
 
-/* ── Sidebar ── */
+/* ── Sidebar (shared fallback — theme-specific overrides take priority) ── */
 [data-testid="stSidebar"] {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 90%, var(--accent1)) 0%, var(--bg) 100%) !important;
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--border) !important;
 }
 [data-testid="stSidebar"] .stMarkdown h1,
 [data-testid="stSidebar"] .stMarkdown h2,
