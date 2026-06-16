@@ -136,7 +136,16 @@ _LIGHT_CSS = """
 .stFileUploader label,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] div:not(.theme-chip):not(.stButton) {
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] small,
+[data-testid="stSidebar"] div:not(.theme-chip):not(.stButton),
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] p,
+[data-testid="stSliderLabel"] p,
+[data-testid="stText"],
+.stSlider [data-testid="stTickBarMin"],
+.stSlider [data-testid="stTickBarMax"],
+.stRadio [data-testid="stMarkdownContainer"] p {
   color: #1e1b4b !important;
 }
 
@@ -1200,45 +1209,89 @@ def main():
             )
 
     else:
-        # Landing state
+        # ── Landing state ──
         st.markdown(
             """
-            <div style='text-align:center; padding: 2rem 1rem 1rem 1rem;'>
-              <div style='font-size:4rem; margin-bottom:0.5rem;'>🚀</div>
-              <h2 style='color:#a78bfa; font-size:1.6rem;'>Ready to Analyse</h2>
-              <p style='color:#64748b; max-width:550px; margin:0 auto 1.5rem auto; line-height:1.7;'>
-                Choose a data source in the sidebar, configure your options,
-                and click <strong style='color:#6c63ff;'>Run Analysis</strong>. Or, tap any of the cards below to test immediately with the sample dataset.
+            <div style='
+              text-align:center;
+              padding: 2.5rem 1rem 2rem 1rem;
+            '>
+              <div style='font-size:3.5rem; margin-bottom:0.6rem;'>🎓</div>
+              <h2 style='
+                background: linear-gradient(135deg, #a78bfa, #f093fb);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-size: 1.8rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+              '>Analyse Teacher Feedback in Seconds</h2>
+              <p style='
+                color: var(--subtext, #94a3b8);
+                max-width: 600px;
+                margin: 0 auto 0.5rem auto;
+                font-size: 1rem;
+                line-height: 1.75;
+              '>
+                Upload a CSV/Excel file, paste feedback manually, or use the built-in sample dataset —
+                then click <strong style="color:#7c3aed;">Run Analysis</strong> in the sidebar to get started.
               </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # Feature cards
-        features = [
-            ("😊", "Sentiment Analysis", "Classify feedback as Positive, Negative, or Neutral using RoBERTa"),
-            ("🎯", "Aspect Detection", "Identify key pedagogical dimensions using sentence-transformers"),
-            ("🏆", "Performance Scoring", "Compute weighted 0–100 scores with letter grades"),
-            ("✍️", "AI Summarization", "Generate concise feedback summaries using BART"),
-            ("📈", "Trend Analysis", "Visualize score changes over time with interactive charts"),
-            ("📄", "PDF Reports", "Export professional performance reports for each teacher"),
+        st.markdown("---")
+
+        # ── What you can do ──
+        st.markdown(
+            "<h3 style='text-align:center; font-weight:700; margin-bottom:1.5rem;'"
+            ">📌 What This Dashboard Can Do</h3>",
+            unsafe_allow_html=True,
+        )
+
+        capabilities = [
+            ("😊", "Sentiment Classification",
+             "Each piece of feedback is automatically classified as Positive, Neutral, or Negative using a fine-tuned RoBERTa transformer."),
+            ("🎯", "Aspect-Based Scoring",
+             "Five teaching dimensions — Communication, Subject Knowledge, Engagement, Responsiveness, and Assignment Quality — are scored 0–100 per teacher."),
+            ("🏆", "Teacher Rankings & Grades",
+             "Teachers are ranked by weighted performance score and assigned letter grades (A+ to F) with confidence bands based on review volume."),
+            ("✍️", "AI-Generated Summaries",
+             "BART generates a concise paragraph summarising each teacher's strengths and areas for improvement from all their feedback."),
+            ("📊", "Interactive Charts",
+             "Radar charts, donut charts, bar rankings, score histograms, and trend lines let you explore patterns across teachers and subjects."),
+            ("📄", "Export Reports",
+             "Download a PDF performance report per teacher or a full CSV with all scores, grades, confidence bands, and AI summaries."),
         ]
-        cols = st.columns(3)
-        for i, (icon, title, desc) in enumerate(features):
-            with cols[i % 3]:
+
+        c1, c2, c3 = st.columns(3)
+        cols_cycle = [c1, c2, c3]
+        for i, (icon, title, desc) in enumerate(capabilities):
+            with cols_cycle[i % 3]:
                 st.markdown(
-                    f"""<div class="kpi-card" style='text-align:left; margin-bottom:0.5rem; height: 165px;'>
-                      <div style='font-size:1.8rem; margin-bottom:0.3rem;'>{icon}</div>
-                      <div style='font-weight:700; color:#e2e8f0; margin-bottom:0.2rem;'>{title}</div>
-                      <div style='font-size:0.8rem; color:#64748b; line-height:1.4;'>{desc}</div>
-                    </div>""",
+                    f"""
+                    <div class="kpi-card" style="text-align:left; min-height:170px; margin-bottom:1rem;">
+                      <div style="font-size:2rem; margin-bottom:0.4rem;">{icon}</div>
+                      <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.35rem;">{title}</div>
+                      <div style="font-size:0.8rem; color:var(--subtext,#94a3b8); line-height:1.5;">{desc}</div>
+                    </div>
+                    """,
                     unsafe_allow_html=True,
                 )
-                if st.button(f"⚡ Test {title}", key=f"feat_{i}", use_container_width=True):
-                    st.session_state["dataset_source"] = "sample"
-                    st.session_state["trigger_analysis"] = True
-                    st.rerun()
+
+        st.markdown("---")
+        st.markdown(
+            """
+            <div style="text-align:center; padding: 0.5rem 0 1rem 0;">
+              <p style="color:var(--subtext,#94a3b8); font-size:0.9rem;">
+                👈 <strong>Select a data source</strong> in the sidebar and click
+                <strong style="color:#7c3aed;">🚀 Run Analysis</strong> to begin.
+              </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 if __name__ == "__main__":
