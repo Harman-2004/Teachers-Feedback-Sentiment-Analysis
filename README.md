@@ -1,3 +1,14 @@
+---
+title: Teacher Feedback Analytics
+emoji: 🎓
+colorFrom: purple
+colorTo: indigo
+sdk: streamlit
+sdk_version: 1.32.0
+app_file: app.py
+pinned: false
+---
+
 # Teacher Feedback Analytics Dashboard
 
 AI-powered dashboard for analysing student feedback about teachers using HuggingFace Transformers and Sentence Transformers.

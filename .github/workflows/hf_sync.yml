@@ -1,0 +1,23 @@
+name: Sync to Hugging Face Spaces
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git remote add hf https://harman-2004:$HF_TOKEN@huggingface.co/spaces/harman-2004/Teacher-Feedback-Analytics
+          git push --force hf main
