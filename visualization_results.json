@@ -1,0 +1,10 @@
+{
+  "metrics": {
+    "bar_chart_rendering_time_s": 0.832443,
+    "pie_chart_rendering_time_s": 0.265225,
+    "sentiment_trend_graph_rendering_time_s": 0.316307,
+    "teacher_ranking_table_rendering_time_s": 0.013697,
+    "word_cloud_generation_time_s": 2.789308,
+    "overall_visualization_loading_time_s": 4.21698
+  }
+}

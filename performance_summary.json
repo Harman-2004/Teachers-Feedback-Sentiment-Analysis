@@ -1,0 +1,12 @@
+{
+  "metrics": {
+    "average_dashboard_loading_time_s": 6.396775,
+    "average_sentiment_inference_latency_s": 3.7e-05,
+    "average_feedback_processing_latency_s": 0.000236,
+    "average_teacher_ranking_generation_time_s": 0.022243,
+    "total_visualization_rendering_time_s": 4.21698,
+    "reviews_processed_per_second": 4234.57,
+    "average_cpu_utilization_pct": 9.12,
+    "average_ram_usage_mb": 52.47
+  }
+}

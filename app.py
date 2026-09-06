@@ -950,12 +950,27 @@ def render_overview_tab(df_filtered: pd.DataFrame, nlp: dict, run_summarizer: bo
 # Word cloud (optional)
 # ---------------------------------------------------------------------------
 def render_wordcloud(texts: List[str]):
+    import hashlib
+    import io
+    import re
+    
+    combined = " ".join(texts)
+    text_hash = hashlib.sha256(combined.encode("utf-8")).hexdigest()
+    
+    # Initialize cache dict in session state if not present
+    if "cached_wordclouds" not in st.session_state:
+        st.session_state["cached_wordclouds"] = {}
+        
+    # Check if cached
+    if text_hash in st.session_state["cached_wordclouds"]:
+        st.image(st.session_state["cached_wordclouds"][text_hash], use_container_width=True)
+        return
+
+    # Otherwise generate and cache
     try:
         from wordcloud import WordCloud
         import matplotlib.pyplot as plt
-        import io
-
-        combined = " ".join(texts)
+        
         wc = WordCloud(
             width=900,
             height=400,
@@ -970,12 +985,58 @@ def render_wordcloud(texts: List[str]):
         ax.set_facecolor("#1a1d2e")
         ax.imshow(wc, interpolation="bilinear")
         ax.axis("off")
-        st.pyplot(fig, use_container_width=True)
+        
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
         plt.close(fig)
+        
+        img_bytes = buf.getvalue()
+        st.session_state["cached_wordclouds"][text_hash] = img_bytes
+        st.image(img_bytes, use_container_width=True)
+        
     except ImportError:
-        st.info("Install `wordcloud` + `matplotlib` to enable word cloud visualisation.")
+        # Beautiful fallback wordcloud using matplotlib if wordcloud package is not installed
+        try:
+            from matplotlib.figure import Figure
+            import random
+            from collections import Counter
+            
+            words = [w.lower().strip() for w in re.findall(r"\b[a-zA-Z']{3,}\b", combined)]
+            # Filter standard English stopwords
+            stopwords = {"the", "and", "a", "of", "to", "in", "is", "that", "it", "he", "was", "for", "on", "are", "as", "with", "his", "they", "i", "at", "be", "this", "have", "from", "or", "one", "had", "by", "word", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "has", "look", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "water", "been", "call", "who", "oil", "its", "now", "find"}
+            filtered_words = [w for w in words if w not in stopwords]
+            
+            if not filtered_words:
+                st.info("Not enough words to generate word cloud.")
+                return
+                
+            word_counts = Counter(filtered_words)
+            top_words = word_counts.most_common(45)
+            
+            fig = Figure(figsize=(10, 4), facecolor="#1a1d2e")
+            ax = fig.subplots()
+            ax.set_facecolor("#1a1d2e")
+            
+            colormaps = ["#6c63ff", "#f093fb", "#4facfe", "#43e97b", "#4ade80", "#facc15", "#f87171"]
+            
+            for word, count in top_words:
+                x = random.uniform(0.1, 0.9)
+                y = random.uniform(0.1, 0.9)
+                fontsize = min(36, max(12, int(count * 3)))
+                color = random.choice(colormaps)
+                ax.text(x, y, word, fontsize=fontsize, color=color, ha='center', va='center', weight='bold')
+                
+            ax.axis("off")
+            buf = io.BytesIO()
+            fig.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+            img_bytes = buf.getvalue()
+            
+            st.session_state["cached_wordclouds"][text_hash] = img_bytes
+            st.image(img_bytes, use_container_width=True)
+        except Exception as exc:
+            st.info(f"Visualisation error: {exc}")
     except Exception as exc:
-        logger.warning(f"Word cloud error: {exc}")
+        st.info(f"Word cloud error: {exc}")
 
 
 # ---------------------------------------------------------------------------

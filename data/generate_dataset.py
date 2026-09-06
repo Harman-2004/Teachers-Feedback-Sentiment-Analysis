@@ -314,7 +314,7 @@ TARGET = 500
 rows = []
 used_texts = set()
 
-def add_row(teacher, subject, text, d):
+def add_row(teacher, subject, text, d, sentiment):
     if text in used_texts:
         return False
     used_texts.add(text)
@@ -325,6 +325,7 @@ def add_row(teacher, subject, text, d):
         "feedback_text": text,
         "semester":     sem,
         "date":         d,
+        "sentiment":    sentiment,
     })
     return True
 
@@ -347,21 +348,25 @@ while len(rows) < TARGET and attempts < TARGET * 10:
     if sentiment == "pos":
         pool = ALL_POS
         text = random.choice(pool)
+        label = "Positive"
     elif sentiment == "neg":
         pool = ALL_NEG
         text = random.choice(pool)
+        label = "Negative"
     elif sentiment == "neu":
         pool = ALL_NEU
         text = random.choice(pool)
+        label = "Neutral"
     else:  # mixed
         text = build_mixed(ALL_POS, ALL_NEG)
+        label = "Mixed"
 
     # Slight teacher-name personalisation
     text = text.replace("She ", f"{'She' if 'Ms.' in teacher or 'Dr.' in teacher and random.random() > 0.5 else 'He'} ")
     text = text.replace("His ", f"{'Her' if 'Ms.' in teacher else 'His'} ")
     text = text.replace("Her ", f"{'Her' if 'Ms.' in teacher else 'His'} ")
 
-    add_row(teacher, subject, text, d)
+    add_row(teacher, subject, text, d, label)
 
 # If we still need more, generate compound sentences
 while len(rows) < TARGET:
@@ -371,7 +376,7 @@ while len(rows) < TARGET:
     p2 = random.choice(ALL_POS).rstrip(".")
     if p1 != p2:
         text = f"{p1}. Additionally, {p2.lower()}."
-        add_row(teacher, subject, text, d)
+        add_row(teacher, subject, text, d, "Positive")
 
 # Sort by date
 rows.sort(key=lambda r: r["date"])
@@ -379,8 +384,8 @@ rows.sort(key=lambda r: r["date"])
 # ── Write CSV ────────────────────────────────────────────────────────────────
 OUT = Path(__file__).parent / "feedback_dataset.csv"
 with open(OUT, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=["teacher_name","subject","feedback_text","semester","date"])
+    writer = csv.DictWriter(f, fieldnames=["teacher_name","subject","feedback_text","semester","date","sentiment"])
     writer.writeheader()
     writer.writerows(rows)
 
-print(f"✅  Written {len(rows)} rows → {OUT}")
+print(f"[OK] Written {len(rows)} rows -> {OUT}")

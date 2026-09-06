@@ -1,0 +1,15 @@
+{
+  "n_reviews": 500,
+  "metrics": {
+    "text_preprocessing_time_s": 0.002727,
+    "tokenization_time_s": 0.010416,
+    "stopword_removal_time_s": 0.00206,
+    "lemmatization_time_s": 0.008323,
+    "sentiment_inference_time_s": 0.018701,
+    "aspect_based_sentiment_analysis_time_s": 0.041304,
+    "feedback_summarization_time_s": 0.034547,
+    "total_nlp_pipeline_time_s": 0.118076,
+    "reviews_processed_per_second": 4234.57,
+    "average_inference_latency_s": 0.000236
+  }
+}

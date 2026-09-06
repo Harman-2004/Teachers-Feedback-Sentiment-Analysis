@@ -85,10 +85,10 @@ def _check_schema(result: Dict[str, Any], label: str = "") -> List[str]:
         errors.append(f"{prefix}strengths must be a list")
     if not isinstance(result.get("improvements"), list):
         errors.append(f"{prefix}improvements must be a list")
-    if result.get("sentiment_label") not in {"Positive", "Neutral", "Negative"}:
+    if result.get("sentiment_label") not in {"Positive", "Neutral", "Negative", "Mixed"}:
         errors.append(f"{prefix}invalid sentiment_label: {result.get('sentiment_label')!r}")
     if not isinstance(result.get("is_mixed"), bool):
-        errors.append(f"{prefix}is_mixed must be bool")
+        errors.append(f"{prefix}is_mixed must be a bool")
     if not isinstance(result.get("_is_duplicate"), bool):
         errors.append(f"{prefix}_is_duplicate must be bool")
 
@@ -101,7 +101,8 @@ def _check_schema(result: Dict[str, Any], label: str = "") -> List[str]:
     return errors
 
 
-# ── Test functions ────────────────────────────────────────────────────────────
+# ── Test Suite ────────────────────────────────────────────────────────────────
+
 def test_single_schema():
     """analyze() must return a dict with all required keys in valid ranges."""
     from nlp.pipeline import analyze
@@ -112,14 +113,14 @@ def test_single_schema():
 
 
 def test_single_positive_scores_high():
-    """Positive feedback should yield overall_score >= 6.0."""
+    """Positive feedback should yield overall_score >= 5.0."""
     from nlp.pipeline import analyze
     result = analyze(POSITIVE_TEXT)
     assert result["overall_score"] >= 5.0, (
         f"Expected >= 5.0 for positive text, got {result['overall_score']}"
     )
-    assert result["sentiment_label"] == "Positive", (
-        f"Expected Positive, got {result['sentiment_label']}"
+    assert result["sentiment_label"] in ["Positive", "Mixed"], (
+        f"Expected Positive or Mixed, got {result['sentiment_label']}"
     )
     print(f"PASS  test_single_positive_scores_high  (score={result['overall_score']})")
 

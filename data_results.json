@@ -1,0 +1,38 @@
+[
+  {
+    "size": 100,
+    "metrics": {
+      "csv_loading_time_s": 0.010549,
+      "data_cleaning_time_s": 0.003601,
+      "missing_value_handling_time_s": 0.010432,
+      "data_aggregation_time_s": 1.685614,
+      "teacher_ranking_generation_time_s": 0.011704,
+      "summary_generation_time_s": 1.417564,
+      "memory_usage_mb": 79.66
+    }
+  },
+  {
+    "size": 500,
+    "metrics": {
+      "csv_loading_time_s": 0.082032,
+      "data_cleaning_time_s": 0.001674,
+      "missing_value_handling_time_s": 0.105799,
+      "data_aggregation_time_s": 0.346887,
+      "teacher_ranking_generation_time_s": 0.051467,
+      "summary_generation_time_s": 0.835952,
+      "memory_usage_mb": 79.57
+    }
+  },
+  {
+    "size": 1000,
+    "metrics": {
+      "csv_loading_time_s": 0.013712,
+      "data_cleaning_time_s": 0.000674,
+      "missing_value_handling_time_s": 0.011007,
+      "data_aggregation_time_s": 0.052616,
+      "teacher_ranking_generation_time_s": 0.003557,
+      "summary_generation_time_s": 0.141522,
+      "memory_usage_mb": 80.2
+    }
+  }
+]

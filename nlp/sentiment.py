@@ -18,23 +18,56 @@ from __future__ import annotations
 import logging
 from functools import lru_cache
 from typing import List, Dict, Any, Tuple
+import joblib
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-# ── Model identifiers ────────────────────────────────────────────────────────
 PRIMARY_MODEL  = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 FALLBACK_MODEL = "distilbert-base-uncased-finetuned-sst-2-english"
 
-# Normalise whatever label string the model emits → canonical form
-_LABEL_NORM: Dict[str, str] = {
-    "positive": "Positive", "POSITIVE": "Positive", "LABEL_2": "Positive",
-    "negative": "Negative", "NEGATIVE": "Negative", "LABEL_0": "Negative",
-    "neutral":  "Neutral",  "NEUTRAL":  "Neutral",  "LABEL_1": "Neutral",
-}
+_MODEL_PATH = Path(__file__).parent.parent / "models" / "sentiment_model.joblib"
 
-# Mixed-sentiment threshold: if the gap between top-1 and top-2 scores is below
-# this value the text is flagged as mixed.
-MIXED_THRESHOLD: float = 0.20
+@lru_cache(maxsize=1)
+def load_ml_model():
+    """Load the trained ML model pipeline from joblib if available."""
+    if _MODEL_PATH.exists():
+        try:
+            return joblib.load(_MODEL_PATH)
+        except Exception as exc:
+            logger.warning("Could not load ML model from %s: %s", _MODEL_PATH, exc)
+            return None
+    return None
+
+
+def analyze_sentiment_ml(texts: List[str]) -> List[Dict[str, Any]]:
+    """Predict sentiment using the trained ML model pipeline."""
+    model = load_ml_model()
+    if model is None or not texts:
+        return _analyze_sentiment_rule_based(texts)
+
+    preds = model.predict(texts)
+    results = []
+    
+    polarity_map = {
+        "Positive": 8.5,
+        "Negative": 2.0,
+        "Neutral": 5.0,
+        "Mixed": 5.5
+    }
+    
+    for text, label in zip(texts, preds):
+        is_mixed = (label == "Mixed")
+        polarity = polarity_map.get(label, 5.0)
+        results.append({
+            "text": text,
+            "label": label,
+            "probs": {label: 1.0},
+            "polarity": polarity,
+            "confidence": 0.90,
+            "is_mixed": is_mixed
+        })
+    return results
 
 
 # ── Private helpers ──────────────────────────────────────────────────────────
@@ -232,46 +265,47 @@ def sentiment_summary(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "overall":         max(counts, key=lambda k: counts[k]),
     }
 
+# Expanded lexicons defined at module level to avoid re-allocation on every call
+_RULE_POS_WORDS = {
+    "great", "excellent", "best", "good", "amazing", "wonderful", "love", "liked", "engaging", 
+    "helpful", "supportive", "patience", "clear", "clarity", "structured", "professional", 
+    "punctual", "enthusiastic", "passionate", "interactive", "support", "fair", "real-world",
+    "approachable", "encouraging", "informative", "inspiring", "organized", "knowledgeable",
+    "patient", "friendly", "kind", "brilliant", "outstanding", "accessible",
+    "concise", "articulate", "fairly", "prompt", "effectively", "recommend"
+}
+
+_RULE_NEG_WORDS = {
+    "difficult", "bad", "worst", "unclear", "fast", "slow", "boring", "late", "delayed", 
+    "unresponsive", "outdated", "monotonous", "poor", "chaotic", "unproductive", "unapproachable", 
+    "dismissive", "workload", "too many", "inconsistent", "vague", "disorganized", "unorganized",
+    "confused", "dry", "rude", "harsh", "unfair", "frustrated", "frustrating", "mumble",
+    "mumbling", "terrible", "waste", "useless", "ignore", "ignored", "ignores", "disappointed"
+}
+
+_RULE_NEGATIONS = {"not", "no", "never", "neither", "nor", "hardly", "scarcely", "barely", "dont", "doesnt", "didnt", "wasnt", "werent", "havent", "hadnt", "couldnt", "wouldnt", "shouldnt", "cant", "cannot", "without"}
+_RULE_INTENSIFIERS = {"very", "extremely", "really", "incredibly", "highly", "absolutely", "so", "super", "truly"}
+
+import re
+_WORD_RE = re.compile(r"\b[a-z']+\b")
+
 
 def _analyze_sentiment_rule_based(texts: List[str]) -> List[Dict[str, Any]]:
     """Lightweight but advanced rule-based sentiment analyzer fallback for low-memory environments."""
     results = []
     
-    # Expanded lexicons
-    pos_words = {
-        "great", "excellent", "best", "good", "amazing", "wonderful", "love", "liked", "engaging", 
-        "helpful", "supportive", "patience", "clear", "clarity", "structured", "professional", 
-        "punctual", "enthusiastic", "passionate", "interactive", "support", "fair", "real-world",
-        "approachable", "encouraging", "informative", "inspiring", "organized", "knowledgeable",
-        "patient", "friendly", "kind", "brilliant", "outstanding", "accessible",
-        "concise", "articulate", "fairly", "prompt", "effectively", "recommend"
-    }
-    
-    neg_words = {
-        "difficult", "bad", "worst", "unclear", "fast", "slow", "boring", "late", "delayed", 
-        "unresponsive", "outdated", "monotonous", "poor", "chaotic", "unproductive", "unapproachable", 
-        "dismissive", "workload", "too many", "inconsistent", "vague", "disorganized", "unorganized",
-        "confused", "dry", "rude", "harsh", "unfair", "frustrated", "frustrating", "mumble",
-        "mumbling", "terrible", "waste", "useless", "ignore", "ignored", "ignores", "disappointed"
-    }
-    
-    negations = {"not", "no", "never", "neither", "nor", "hardly", "scarcely", "barely", "dont", "doesnt", "didnt", "wasnt", "werent", "havent", "hadnt", "couldnt", "wouldnt", "shouldnt", "cant", "cannot", "without"}
-    intensifiers = {"very", "extremely", "really", "incredibly", "highly", "absolutely", "so", "super", "truly"}
-    
-    import re
-    
     for text in texts:
         lower = text.lower()
         # Clean text punctuation for easier word matching
-        words = re.findall(r"\b[a-z']+\b", lower)
+        words = _WORD_RE.findall(lower)
         
         pos_score = 0.0
         neg_score = 0.0
         
         for idx, word in enumerate(words):
             # Check if word is in sentiment lexicon
-            is_pos = word in pos_words
-            is_neg = word in neg_words
+            is_pos = word in _RULE_POS_WORDS
+            is_neg = word in _RULE_NEG_WORDS
             
             if not is_pos and not is_neg:
                 continue
@@ -283,9 +317,9 @@ def _analyze_sentiment_rule_based(texts: List[str]) -> List[Dict[str, Any]]:
             start_window = max(0, idx - 2)
             for j in range(start_window, idx):
                 prev_word = words[j]
-                if prev_word in negations:
+                if prev_word in _RULE_NEGATIONS:
                     negated = True
-                elif prev_word in intensifiers:
+                elif prev_word in _RULE_INTENSIFIERS:
                     intensity = 1.5
             
             if is_pos:

@@ -70,9 +70,10 @@ from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-# ── Lazy imports so the module can be imported before torch is ready ──────────
 def _get_sentiment():
-    from nlp.sentiment import analyze_sentiment
+    from nlp.sentiment import analyze_sentiment_ml, load_ml_model, analyze_sentiment
+    if load_ml_model() is not None:
+        return lambda texts, **kwargs: analyze_sentiment_ml(texts)
     return analyze_sentiment
 
 def _get_aspects():

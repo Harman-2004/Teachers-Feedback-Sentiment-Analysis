@@ -523,35 +523,37 @@ def aspect_frequency_table(batch_results: List[Dict[str, Any]]) -> Dict[str, int
     return freq
 
 
+# Aspect keywords defined at module level to avoid dict allocation overhead on every call
+_RULE_ASPECT_KEYWORDS = {
+    "Communication": {
+        "pos": ["clear", "clarity", "explain", "structure", "organized", "pace", "simple", "analogy", "analogies", "articulate"],
+        "neg": ["fast", "unclear", "vague", "mumble", "confusing", "confusion", "jargon", "speed", "rapid", "mumbling"]
+    },
+    "Subject Knowledge": {
+        "pos": ["knowledge", "expertise", "expert", "research", "industry", "theory", "competent", "factual", "academic", "deep"],
+        "neg": ["outdated", "textbook", "error", "errors", "mistake", "mistakes", "unprepared", "inaccurate", "wrong"]
+    },
+    "Engagement": {
+        "pos": ["interactive", "fun", "engage", "engaging", "discussion", "quiz", "enthusiasm", "enthusiastic", "passionate", "participation", "participate", "motivate", "motivation"],
+        "neg": ["boring", "monotonous", "sleep", "dry", "one-sided", "passive", "uninteresting", "lecture-only"]
+    },
+    "Responsiveness": {
+        "pos": ["responsive", "available", "office hours", "email", "reply", "helpful", "supportive", "approachable", "query", "queries", "support"],
+        "neg": ["unresponsive", "late", "delayed", "ignore", "ignored", "dismissive", "unapproachable", "unavailable"]
+    },
+    "Assignment Quality": {
+        "pos": ["assignment", "assignments", "grading", "grade", "grades", "rubric", "feedback", "practical", "real-world", "exam", "exams"],
+        "neg": ["excessive", "workload", "inconsistent", "delayed grades", "no feedback", "hard grading"]
+    }
+}
+
+
 def _score_aspects_rule_based(text: str) -> Dict[str, Dict[str, Any]]:
     """Lightweight rule-based aspect scorer fallback for low-memory environments."""
     lower = text.lower()
     
-    aspect_keywords = {
-        "Communication": {
-            "pos": ["clear", "clarity", "explain", "structure", "organized", "pace", "simple", "analogy", "analogies", "articulate"],
-            "neg": ["fast", "unclear", "vague", "mumble", "confusing", "confusion", "jargon", "speed", "rapid", "mumbling"]
-        },
-        "Subject Knowledge": {
-            "pos": ["knowledge", "expertise", "expert", "research", "industry", "theory", "competent", "factual", "academic", "deep"],
-            "neg": ["outdated", "textbook", "error", "errors", "mistake", "mistakes", "unprepared", "inaccurate", "wrong"]
-        },
-        "Engagement": {
-            "pos": ["interactive", "fun", "engage", "engaging", "discussion", "quiz", "enthusiasm", "enthusiastic", "passionate", "participation", "participate", "motivate", "motivation"],
-            "neg": ["boring", "monotonous", "sleep", "dry", "one-sided", "passive", "uninteresting", "lecture-only"]
-        },
-        "Responsiveness": {
-            "pos": ["responsive", "available", "office hours", "email", "reply", "helpful", "supportive", "approachable", "query", "queries", "support"],
-            "neg": ["unresponsive", "late", "delayed", "ignore", "ignored", "dismissive", "unapproachable", "unavailable"]
-        },
-        "Assignment Quality": {
-            "pos": ["assignment", "assignments", "grading", "grade", "grades", "rubric", "feedback", "practical", "real-world", "exam", "exams"],
-            "neg": ["excessive", "workload", "inconsistent", "delayed grades", "no feedback", "hard grading"]
-        }
-    }
-    
     results: Dict[str, Dict[str, Any]] = {}
-    for aspect, kw in aspect_keywords.items():
+    for aspect, kw in _RULE_ASPECT_KEYWORDS.items():
         pos_count = sum(1 for w in kw["pos"] if w in lower)
         neg_count = sum(1 for w in kw["neg"] if w in lower)
         

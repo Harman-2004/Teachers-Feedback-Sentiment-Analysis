@@ -1,0 +1,362 @@
+[
+  {
+    "session_id": 1,
+    "mode": "Rule-Based",
+    "size": 50,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 6.2238,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0217,
+      "data_analysis_time_s": 0.0193,
+      "visualization_rendering_time_s": 2.9376,
+      "total_dashboard_response_time_s": 9.2024,
+      "memory_before_mb": 84.02,
+      "memory_after_mb": 83.61,
+      "memory_delta_mb": -0.41,
+      "cpu_utilization_pct": 9.62
+    }
+  },
+  {
+    "session_id": 2,
+    "mode": "Rule-Based",
+    "size": 100,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 38.4952,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0498,
+      "data_analysis_time_s": 0.0558,
+      "visualization_rendering_time_s": 0.5127,
+      "total_dashboard_response_time_s": 39.1136,
+      "memory_before_mb": 4.97,
+      "memory_after_mb": 30.48,
+      "memory_delta_mb": 25.51,
+      "cpu_utilization_pct": 10.77
+    }
+  },
+  {
+    "session_id": 3,
+    "mode": "Rule-Based",
+    "size": 150,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 5.6674,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0186,
+      "data_analysis_time_s": 0.0156,
+      "visualization_rendering_time_s": 0.2086,
+      "total_dashboard_response_time_s": 5.9103,
+      "memory_before_mb": 31.42,
+      "memory_after_mb": 32.3,
+      "memory_delta_mb": 0.88,
+      "cpu_utilization_pct": 22.18
+    }
+  },
+  {
+    "session_id": 4,
+    "mode": "Rule-Based",
+    "size": 200,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 4.0927,
+      "csv_upload_time_s": 0.0003,
+      "data_parsing_time_s": 0.0457,
+      "data_analysis_time_s": 0.0834,
+      "visualization_rendering_time_s": 0.3816,
+      "total_dashboard_response_time_s": 4.6036,
+      "memory_before_mb": 32.34,
+      "memory_after_mb": 33.34,
+      "memory_delta_mb": 1.0,
+      "cpu_utilization_pct": 13.72
+    }
+  },
+  {
+    "session_id": 5,
+    "mode": "Rule-Based",
+    "size": 250,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 4.4166,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0098,
+      "data_analysis_time_s": 0.0095,
+      "visualization_rendering_time_s": 0.2764,
+      "total_dashboard_response_time_s": 4.7123,
+      "memory_before_mb": 32.96,
+      "memory_after_mb": 33.86,
+      "memory_delta_mb": 0.89,
+      "cpu_utilization_pct": 18.88
+    }
+  },
+  {
+    "session_id": 6,
+    "mode": "Rule-Based",
+    "size": 300,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 3.8386,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0159,
+      "data_analysis_time_s": 0.0183,
+      "visualization_rendering_time_s": 0.8417,
+      "total_dashboard_response_time_s": 4.7146,
+      "memory_before_mb": 33.03,
+      "memory_after_mb": 63.16,
+      "memory_delta_mb": 30.13,
+      "cpu_utilization_pct": 15.0
+    }
+  },
+  {
+    "session_id": 7,
+    "mode": "Rule-Based",
+    "size": 350,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 5.0326,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0294,
+      "data_analysis_time_s": 0.0126,
+      "visualization_rendering_time_s": 0.2763,
+      "total_dashboard_response_time_s": 5.3511,
+      "memory_before_mb": 62.61,
+      "memory_after_mb": 61.18,
+      "memory_delta_mb": -1.44,
+      "cpu_utilization_pct": 16.99
+    }
+  },
+  {
+    "session_id": 8,
+    "mode": "Rule-Based",
+    "size": 400,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 5.316,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0128,
+      "data_analysis_time_s": 0.0122,
+      "visualization_rendering_time_s": 0.2603,
+      "total_dashboard_response_time_s": 5.6013,
+      "memory_before_mb": 61.12,
+      "memory_after_mb": 61.36,
+      "memory_delta_mb": 0.23,
+      "cpu_utilization_pct": 22.18
+    }
+  },
+  {
+    "session_id": 9,
+    "mode": "Rule-Based",
+    "size": 450,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 3.9433,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0219,
+      "data_analysis_time_s": 0.0186,
+      "visualization_rendering_time_s": 0.3813,
+      "total_dashboard_response_time_s": 4.3652,
+      "memory_before_mb": 41.16,
+      "memory_after_mb": 41.71,
+      "memory_delta_mb": 0.55,
+      "cpu_utilization_pct": 17.99
+    }
+  },
+  {
+    "session_id": 10,
+    "mode": "Rule-Based",
+    "size": 500,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 5.5846,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0217,
+      "data_analysis_time_s": 0.0148,
+      "visualization_rendering_time_s": 0.302,
+      "total_dashboard_response_time_s": 5.9232,
+      "memory_before_mb": 36.76,
+      "memory_after_mb": 37.23,
+      "memory_delta_mb": 0.46,
+      "cpu_utilization_pct": 20.91
+    }
+  },
+  {
+    "session_id": 11,
+    "mode": "Deep Learning",
+    "size": 10,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 9.375,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0102,
+      "data_analysis_time_s": 41.8594,
+      "visualization_rendering_time_s": 0.3749,
+      "total_dashboard_response_time_s": 51.6195,
+      "memory_before_mb": 33.06,
+      "memory_after_mb": 98.65,
+      "memory_delta_mb": 65.59,
+      "cpu_utilization_pct": 7.16
+    }
+  },
+  {
+    "session_id": 12,
+    "mode": "Deep Learning",
+    "size": 15,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 6.027,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0326,
+      "data_analysis_time_s": 11.5397,
+      "visualization_rendering_time_s": 0.3957,
+      "total_dashboard_response_time_s": 17.9951,
+      "memory_before_mb": 81.23,
+      "memory_after_mb": 66.93,
+      "memory_delta_mb": -14.31,
+      "cpu_utilization_pct": 0.94
+    }
+  },
+  {
+    "session_id": 13,
+    "mode": "Deep Learning",
+    "size": 20,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 3.5824,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0262,
+      "data_analysis_time_s": 14.0939,
+      "visualization_rendering_time_s": 0.3284,
+      "total_dashboard_response_time_s": 18.031,
+      "memory_before_mb": 57.16,
+      "memory_after_mb": 50.71,
+      "memory_delta_mb": -6.45,
+      "cpu_utilization_pct": 0.59
+    }
+  },
+  {
+    "session_id": 14,
+    "mode": "Deep Learning",
+    "size": 25,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 3.7295,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0171,
+      "data_analysis_time_s": 12.5783,
+      "visualization_rendering_time_s": 0.3229,
+      "total_dashboard_response_time_s": 16.6479,
+      "memory_before_mb": 50.76,
+      "memory_after_mb": 50.64,
+      "memory_delta_mb": -0.12,
+      "cpu_utilization_pct": 0.72
+    }
+  },
+  {
+    "session_id": 15,
+    "mode": "Deep Learning",
+    "size": 30,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 4.1795,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0316,
+      "data_analysis_time_s": 12.2396,
+      "visualization_rendering_time_s": 0.2682,
+      "total_dashboard_response_time_s": 16.7189,
+      "memory_before_mb": 50.66,
+      "memory_after_mb": 50.22,
+      "memory_delta_mb": -0.43,
+      "cpu_utilization_pct": 0.74
+    }
+  },
+  {
+    "session_id": 16,
+    "mode": "Deep Learning",
+    "size": 35,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 3.6906,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0297,
+      "data_analysis_time_s": 12.3588,
+      "visualization_rendering_time_s": 0.3142,
+      "total_dashboard_response_time_s": 16.3934,
+      "memory_before_mb": 50.23,
+      "memory_after_mb": 50.25,
+      "memory_delta_mb": 0.02,
+      "cpu_utilization_pct": 0.52
+    }
+  },
+  {
+    "session_id": 17,
+    "mode": "Deep Learning",
+    "size": 40,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 3.5411,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0162,
+      "data_analysis_time_s": 10.7061,
+      "visualization_rendering_time_s": 0.4854,
+      "total_dashboard_response_time_s": 14.749,
+      "memory_before_mb": 50.27,
+      "memory_after_mb": 50.77,
+      "memory_delta_mb": 0.5,
+      "cpu_utilization_pct": 0.87
+    }
+  },
+  {
+    "session_id": 18,
+    "mode": "Deep Learning",
+    "size": 45,
+    "n_teachers": 4,
+    "metrics": {
+      "dashboard_loading_time_s": 3.9471,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0212,
+      "data_analysis_time_s": 11.9484,
+      "visualization_rendering_time_s": 0.3306,
+      "total_dashboard_response_time_s": 16.2474,
+      "memory_before_mb": 50.8,
+      "memory_after_mb": 51.14,
+      "memory_delta_mb": 0.34,
+      "cpu_utilization_pct": 0.76
+    }
+  },
+  {
+    "session_id": 19,
+    "mode": "Deep Learning",
+    "size": 50,
+    "n_teachers": 5,
+    "metrics": {
+      "dashboard_loading_time_s": 3.9969,
+      "csv_upload_time_s": 0.0,
+      "data_parsing_time_s": 0.0123,
+      "data_analysis_time_s": 7.8767,
+      "visualization_rendering_time_s": 0.2187,
+      "total_dashboard_response_time_s": 12.1047,
+      "memory_before_mb": 50.77,
+      "memory_after_mb": 50.7,
+      "memory_delta_mb": -0.07,
+      "cpu_utilization_pct": 1.01
+    }
+  },
+  {
+    "session_id": 20,
+    "mode": "Deep Learning",
+    "size": 60,
+    "n_teachers": 3,
+    "metrics": {
+      "dashboard_loading_time_s": 3.2556,
+      "csv_upload_time_s": 0.0001,
+      "data_parsing_time_s": 0.0381,
+      "data_analysis_time_s": 10.3662,
+      "visualization_rendering_time_s": 0.2237,
+      "total_dashboard_response_time_s": 13.8837,
+      "memory_before_mb": 50.71,
+      "memory_after_mb": 51.16,
+      "memory_delta_mb": 0.45,
+      "cpu_utilization_pct": 0.77
+    }
+  }
+]
